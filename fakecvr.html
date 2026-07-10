@@ -3,104 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CVR Generator</title>
+    <title>CVR & Brand Generator</title>
+    <link rel="icon" href="https://fav.farm/🏭" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         :root {
             --primary: #3b82f6;
+            --secondary: #a855f7;
             --bg: #0f172a;
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
             background-image: radial-gradient(circle at 50% -20%, #1e293b, #0f172a);
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             color: white;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 3rem;
+            border-radius: 28px;
+            padding: 2.5rem;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
         h1 {
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 1px;
+            font-size: 1.25rem;
+            font-weight: 400;
+            letter-spacing: 2px;
             margin-bottom: 2rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
         }
 
-        .result-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px inset rgba(255, 255, 255, 0.05);
-        }
-
-        #result {
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: var(--primary);
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        .card {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
         .label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.4);
             margin-bottom: 0.5rem;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
+        }
+
+        .value {
+            font-family: 'Monaco', monospace;
+            color: var(--primary);
+            word-wrap: break-word;
+        }
+
+        #company-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        #cvr-number {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
         }
 
         button {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 1.2rem;
+            border-radius: 16px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 100%;
-            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
         }
 
         button:hover {
-            transform: translateY(-2px);
-            background: #2563eb;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
 
         button:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
-        /* Subtle glow animation for the number */
-        .pulse {
-            animation: pulse-animation 0.5s ease-out;
+        .animate-pop {
+            animation: pop 0.4s ease-out;
         }
 
-        @keyframes pulse-animation {
-            0% { transform: scale(0.95); opacity: 0.5; }
+        @keyframes pop {
+            0% { transform: scale(0.9); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
     </style>
@@ -110,20 +124,33 @@
 <div class="container">
     <h1>Danish CVR Generator</h1>
 
-    <div class="result-card">
-        <div id="result">--------</div>
+    <div class="card">
+        <span class="label">Company Name</span>
+        <div id="company-name" class="value">--------</div>
     </div>
 
-    <form id="genForm">
-        <button type="submit">Generate New CVR</button>
-    </form>
+    <div class="card">
+        <span class="label">CVR Number</span>
+        <div id="cvr-number" class="value">--------</div>
+    </div>
+
+    <button id="generateBtn">Generate</button>
 </div>
 
 <script>
 $(function () {
-    $("#genForm").submit(function (e) {
-        e.preventDefault();
-        
+    const prefixes = ["TNT", "Nordic", "Quantum", "Nexus", "Velocity", "Summit", "Aura", "Nova", "Stream", "Titan", "Zenith"];
+    const suffixes = ["TNT" ,"Solutions", "Digital", "Consulting", "Systems", "Labs", "Tech", "Partners", "Dynamics", "Intelligence", "Global"];
+    const types = ["ApS", "A/S", "I/S", "PMV"];
+
+    $("#generateBtn").click(function () {
+        // --- 1. Generate Company Name ---
+        const randomPre = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const randomSuf = suffixes[Math.floor(Math.random() * suffixes.length)];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        const fullName = `${randomPre} ${randomSuf} ${randomType}`;
+
+        // --- 2. Generate Valid CVR ---
         let cvr = "";
         let isValid = false;
 
@@ -141,26 +168,26 @@ $(function () {
             }
         }
 
-        const $res = $("#result");
-        $res.html(cvr).addClass('pulse');
-        
+        // --- 3. Update UI ---
+        $("#company-name").text(fullName).addClass('animate-pop');
+        $("#cvr-number").text(cvr).addClass('animate-pop');
+
+        // Clean up animation classes
         setTimeout(() => {
-            $res.removeClass('pulse');
-        }, 500);
+            $(".value").removeClass('animate-pop');
+        }, 400);
     });
-});
 
-function calculateCvrCheckDigit(input7) {
-    const weights = [2, 7, 6, 5, 4, 3, 2];
-    let sum = 0;
-
-    for (let i = 0; i < 7; i++) {
-        sum += parseInt(input7.charAt(i), 10) * weights[i];
+    function calculateCvrCheckDigit(input7) {
+        const weights = [2, 7, 6, 5, 4, 3, 2];
+        let sum = 0;
+        for (let i = 0; i < 7; i++) {
+            sum += parseInt(input7.charAt(i), 10) * weights[i];
+        }
+        let remainder = sum % 11;
+        return remainder === 0 ? 0 : 11 - remainder;
     }
-
-    let remainder = sum % 11;
-    return remainder === 0 ? 0 : 11 - remainder;
-}
+});
 </script>
 
 </body>
