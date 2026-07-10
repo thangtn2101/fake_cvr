@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVR Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 50% -20%, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .result-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px inset rgba(255, 255, 255, 0.05);
+        }
+
+        #result {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: #2563eb;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Subtle glow animation for the number */
+        .pulse {
+            animation: pulse-animation 0.5s ease-out;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Danish CVR Generator</h1>
+
+    <div class="result-card">
+        <div id="result">--------</div>
+    </div>
+
+    <form id="genForm">
+        <button type="submit">Generate New CVR</button>
+    </form>
+</div>
+
+<script>
+$(function () {
+    $("#genForm").submit(function (e) {
+        e.preventDefault();
+        
+        let cvr = "";
+        let isValid = false;
+
+        while (!isValid) {
+            let input7 = "";
+            for (let i = 0; i < 7; i++) {
+                input7 += Math.floor(Math.random() * 10);
+            }
+
+            let lastDigit = calculateCvrCheckDigit(input7);
+
+            if (lastDigit !== 10) {
+                cvr = input7 + (lastDigit === 11 ? 0 : lastDigit);
+                isValid = true;
+            }
+        }
+
+        const $res = $("#result");
+        $res.html(cvr).addClass('pulse');
+        
+        setTimeout(() => {
+            $res.removeClass('pulse');
+        }, 500);
+    });
+});
+
+function calculateCvrCheckDigit(input7) {
+    const weights = [2, 7, 6, 5, 4, 3, 2];
+    let sum = 0;
+
+    for (let i = 0; i < 7; i++) {
+        sum += parseInt(input7.charAt(i), 10) * weights[i];
+    }
+
+    let remainder = sum % 11;
+    return remainder === 0 ? 0 : 11 - remainder;
+}
+</script>
+
+</body>
+</html>
